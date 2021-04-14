@@ -38,7 +38,7 @@ public class DefiCRUD{
                 defi.titre = rs.getString("titre");
                 defi.dateDeCreation = rs.getDate("dateDeCreation");
                 defi.description = rs.getString("description");
-                defi.login_Auteur = rs.getString("login_fk");
+                defi.loginAuteur = rs.getString("login_fk");
                 L.add(defi);
             }
             return L;
@@ -62,16 +62,18 @@ public class DefiCRUD{
 
             Defi defi = new Defi();
             if(!rs.next()){
-                System.err.println("Erreur HTTP 404"); 
+                response.setStatus(404);
+                response.getOutputStream().print("erreur 404");
+                return null;
             }else{
-                rs.first();
                 defi.id = rs.getString("id");
                 defi.titre = rs.getString("titre");
                 defi.dateDeCreation = rs.getDate("dateDeCreation");
                 defi.description = rs.getString("description");
-                defi.login_Auteur = rs.getString("login_fk");
+                defi.loginAuteur = rs.getString("login_fk");
+                return defi;
             }
-            return defi;
+            
         } catch(Exception e){
             response.setStatus(500);
         try{
@@ -85,26 +87,24 @@ public class DefiCRUD{
     }
 
     @PostMapping("/{defiID}")
-    public Defi create(@PathVariable(value="defiID") String id, @RequestBody Defi defi, HttpServletResponse response){
-        try (Connection connection = dataSource.getConnection()){
+    public Defi create(@PathVariable(value="defiID") String id, @RequestBody Defi u, HttpServletResponse response){
+        try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
-            if(rs.next()){
-                System.err.println("Erreur HTTP 403");
-                
-            }else{
-                Defi s = new Defi();
-                s.id = rs.getString("id");
-                s.titre = rs.getString("titre");
-                s.dateDeCreation = rs.getDate("dateDeCreation");
-                s.description = rs.getString("description");
-                s.login_Auteur = rs.getString("login_fk");
-                if(id.equals(defi.getId())){
-                    int create = stmt.executeUpdate("Insert into defis values('"+ defi.getId() +"','"+defi.getTitre() +"','"+defi.getDateDeCreation()+"','"+defi.getDescription()+"','"+defi.getLoginAuteur()+"')"); 
-                }else
-                    System.err.println("Erreur HTTP 412");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id ='"+ id +"'");
+            if (rs.next()) {
+                response.setStatus(403);
+                response.getOutputStream().print("Erreur HTTP 403");
+                return null;
+            } else {
+                if(id.equals(u.getId())) {
+                    stmt.executeUpdate("Insert into defis values('"+ u.getId() +"','"+ u.getTitre() +"','"+ u.getDateDeCreation() + "','" + u.getDescription() + "','" + u.getLoginAuteur() + "')"); 
+                    return u;
+                } else {
+                    response.setStatus(412);
+                    response.getOutputStream().print("Erreur HTTP 412");
+                    return null;
+                }
             }
-            return defi;
         } catch(Exception e){
             response.setStatus(500);
         try{
@@ -117,37 +117,54 @@ public class DefiCRUD{
         } 
     }
 
-        @PutMapping("/{defiID}")
-        public Defi update(@PathVariable(value="defiID") String id, @RequestBody Defi u, HttpServletResponse response){
-            try (Connection connection = dataSource.getConnection()){
-                Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
-                if(rs.next()){
-                    System.err.println("Erreur HTTP 403");
-                    
+    @PutMapping("/{defiID}")
+    public Defi update(@PathVariable(value="defiID") String id, @RequestBody Defi u, HttpServletResponse response){
+        try (Connection connection = dataSource.getConnection()){
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
+            if(rs.next()){
+                if(rs.getString("id").equals(u.getId())){
+                    stmt.executeUpdate("UPDATE defis set id ='"+ u.getId() +"',titre ='"+ u.getTitre() +"',datedecreation= '"+ u.getDateDeCreation()+"', description ='"+ u.getDescription()+"',login_fk ='"+ u.getLoginAuteur()+"' where id ='"+ u.getId() + "'"); 
                 }else{
-                    Defi defi = new Defi();
-                    defi.id = rs.getString("id");
-                    defi.titre = rs.getString("titre");
-                    defi.dateDeCreation = rs.getDate("dateDeCreation");
-                    defi.description = rs.getString("description");
-                    defi.login_Auteur = rs.getString("login_fk");
-                    if(id.equals(defi.getId())){
-                        int create = stmt.executeUpdate("Insert into defis values('"+ defi.getId() +"','"+defi.getTitre() +"','"+defi.getDateDeCreation()+"','"+defi.getDescription()+"','"+defi.getLoginAuteur()+"')"); 
-
-                    }else
-                        System.err.println("Erreur HTTP 412");
+                    response.setStatus(412);
+                    response.getOutputStream().print("Erreur HTTP 412");
                 }
-                return u;
-            } catch(Exception e){
-                response.setStatus(500);
+            }else{
+                response.setStatus(404);
+                response.getOutputStream().print("Erreur HTTP 404");
+            }
+            return u;
+        } catch(Exception e){
+            response.setStatus(500);
             try{
                 response.getOutputStream().print(e.getMessage());
             } catch (Exception e2) {
                 System.err.println(e2.getMessage()); 
             }
             System.err.println(e.getMessage());
-            return null;
-            } 
+        }
+    return null;
+    }
+
+    @DeleteMapping("/{userId}")
+    void delete(@PathVariable(value="userId") String id, HttpServletResponse response){
+        try (Connection connection = dataSource.getConnection()){
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
+            if(rs.next()){
+                stmt.executeUpdate("DELETE FROM defis WHERE id = '" + id + "'"); 
+            }else{
+                response.setStatus(404);
+                response.getOutputStream().print("Erreur HTTP 404");
+            }
+        } catch(Exception e){
+            response.setStatus(500);
+            try{
+                response.getOutputStream().print(e.getMessage());
+            } catch (Exception e2) {
+                System.err.println(e2.getMessage()); 
+            }
+            System.err.println(e.getMessage());
+        }
     }
 }

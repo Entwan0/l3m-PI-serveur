@@ -6,10 +6,9 @@ public class Defi {
     public String titre;
     public Date dateDeCreation;
     public String description;
-    public String login_Auteur;
+    public String loginAuteur;
 
     public Defi(){
-
     }
 
     public String getId(){
@@ -25,6 +24,6 @@ public class Defi {
         return description;
     }
     public String getLoginAuteur(){
-        return login_Auteur;
+        return loginAuteur;
     }
 }

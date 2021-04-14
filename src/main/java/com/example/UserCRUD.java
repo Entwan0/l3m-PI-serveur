@@ -89,7 +89,6 @@ public class UserCRUD{
                 response.getOutputStream().print("Erreur HTTP 403");
                 return null;
             } else {
-                System.out.println( "|" + id + "/" + u.getLogin() + "|" );
                 if(id.equals(u.getLogin())) {
                     stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
                     return u;
@@ -117,7 +116,6 @@ public class UserCRUD{
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
                 if(rs.next()){
-                    // Vous renvoyez toujours 412
                     if(rs.getString("login").equals(u.getLogin())){
                         stmt.executeUpdate("UPDATE chamis set age = "+ u.getAge() + "WHERE login = '" + u.login + "'"); 
                     }else{

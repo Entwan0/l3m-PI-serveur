@@ -27,5 +27,4 @@ public class DbConnection {
             return new HikariDataSource(config);
         }
     }
-
 }
