@@ -99,7 +99,7 @@ public class DefiCRUD{
                 s.dateDeCreation = rs.getDate("dateDeCreation");
                 s.description = rs.getString("description");
                 s.login_Auteur = rs.getString("login_fk");
-                if(id == defi.getId()){
+                if(id.equals(defi.getId())){
                     int create = stmt.executeUpdate("Insert into defis values('"+ defi.getId() +"','"+defi.getTitre() +"','"+defi.getDateDeCreation()+"','"+defi.getDescription()+"','"+defi.getLoginAuteur()+"')"); 
                 }else
                     System.err.println("Erreur HTTP 412");
@@ -132,7 +132,7 @@ public class DefiCRUD{
                     defi.dateDeCreation = rs.getDate("dateDeCreation");
                     defi.description = rs.getString("description");
                     defi.login_Auteur = rs.getString("login_fk");
-                    if(id == u.getId()){
+                    if(id.equals(defi.getId())){
                         int create = stmt.executeUpdate("Insert into defis values('"+ defi.getId() +"','"+defi.getTitre() +"','"+defi.getDateDeCreation()+"','"+defi.getDescription()+"','"+defi.getLoginAuteur()+"')"); 
 
                     }else

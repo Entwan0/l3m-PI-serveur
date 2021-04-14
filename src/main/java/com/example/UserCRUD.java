@@ -59,6 +59,7 @@ public class UserCRUD{
 
             User u = new User();
             if(!rs.next()){
+                response.setStatus(404);
                 response.getOutputStream().print("erreur 404");
                 return null;
             }else{
@@ -80,18 +81,24 @@ public class UserCRUD{
 
     @PostMapping("/{userId}")
     public User create(@PathVariable(value="userId") String id, @RequestBody User u, HttpServletResponse response){
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
-            if(!rs.next()){
+            if (rs.next()) {
+                response.setStatus(403);
                 response.getOutputStream().print("Erreur HTTP 403");
-            }else{
-                if(rs.getString("login") == u.getLogin()){
-                    int create = stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
-                }else
+                return null;
+            } else {
+                System.out.println( "|" + id + "/" + u.getLogin() + "|" );
+                if(id.equals(u.getLogin())) {
+                    stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
+                    return u;
+                } else {
+                    response.setStatus(412);
                     response.getOutputStream().print("Erreur HTTP 412");
+                    return null;
+                }
             }
-            return u;
         } catch(Exception e){
             response.setStatus(500);
         try{
@@ -104,29 +111,55 @@ public class UserCRUD{
         } 
     }
 
-        @PutMapping("/{userId}")
+    @PutMapping("/{userId}")
         public User update(@PathVariable(value="userId") String id, @RequestBody User u, HttpServletResponse response){
             try (Connection connection = dataSource.getConnection()){
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
                 if(rs.next()){
-                    if(rs.getString("login") == u.getLogin()){
-                        int create = stmt.executeUpdate("UPDATE chamis set age = "+ u.getAge() + "WHERE login = '" + u.login + "'"); 
-                    }else
-                    response.getOutputStream().print("Erreur HTTP 412");
+                    // Vous renvoyez toujours 412
+                    if(rs.getString("login").equals(u.getLogin())){
+                        stmt.executeUpdate("UPDATE chamis set age = "+ u.getAge() + "WHERE login = '" + u.login + "'"); 
+                    }else{
+                        response.setStatus(412);
+                        response.getOutputStream().print("Erreur HTTP 412");
+                    }
                 }else{
+                    response.setStatus(404);
                     response.getOutputStream().print("Erreur HTTP 404");
                 }
                 return u;
             } catch(Exception e){
                 response.setStatus(500);
+                try{
+                    response.getOutputStream().print(e.getMessage());
+                } catch (Exception e2) {
+                    System.err.println(e2.getMessage()); 
+                }
+                System.err.println(e.getMessage());
+            }
+        return null;
+    }
+
+    @DeleteMapping("/{userId}")
+    void delete(@PathVariable(value="userId") String id, HttpServletResponse response){
+        try (Connection connection = dataSource.getConnection()){
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
+            if(rs.next()){
+                stmt.executeUpdate("DELETE FROM chamis WHERE login = '" + id + "'"); 
+            }else{
+                response.setStatus(404);
+                response.getOutputStream().print("Erreur HTTP 404");
+            }
+        } catch(Exception e){
+            response.setStatus(500);
             try{
                 response.getOutputStream().print(e.getMessage());
             } catch (Exception e2) {
                 System.err.println(e2.getMessage()); 
             }
             System.err.println(e.getMessage());
-            return null;
-            } 
+        }
     }
  }
