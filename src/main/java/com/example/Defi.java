@@ -7,4 +7,24 @@ public class Defi {
     public Date dateDeCreation;
     public String description;
     public String login_Auteur;
+
+    public Defi(){
+
+    }
+
+    public String getId(){
+        return id;
+    }
+    public String getTitre(){
+        return titre;
+    }
+    public Date getDateDeCreation(){
+        return dateDeCreation;
+    }
+    public String getDescription(){
+        return description;
+    }
+    public String getLoginAuteur(){
+        return login_Auteur;
+    }
 }

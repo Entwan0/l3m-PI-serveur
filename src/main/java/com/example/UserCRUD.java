@@ -59,22 +59,22 @@ public class UserCRUD{
 
             User u = new User();
             if(!rs.next()){
-                System.err.println("Erreur HTTP 404"); 
+                response.getOutputStream().print("erreur 404");
+                return null;
             }else{
-                rs.first();
                 u.login = rs.getString("login");
                 u.age = rs.getInt("age");
+                return u;
             }
-            return u;
         } catch(Exception e){
             response.setStatus(500);
-        try{
-            response.getOutputStream().print(e.getMessage());
-        } catch (Exception e2) {
-            System.err.println(e2.getMessage()); 
-        }
-        System.err.println(e.getMessage());
-        return null;
+            try{
+                response.getOutputStream().print(e.getMessage());
+            } catch (Exception e2) {
+                System.err.println(e2.getMessage()); 
+            }
+            System.err.println(e.getMessage());
+            return null;
         }
     }
 
@@ -83,17 +83,13 @@ public class UserCRUD{
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
-            if(rs.next()){
-                System.err.println("Erreur HTTP 403");
-                
+            if(!rs.next()){
+                response.getOutputStream().print("Erreur HTTP 403");
             }else{
-                User s = new User();
-                s.login = rs.getString("login");
-                s.age = rs.getInt("age");
-                if(id == u.getLogin()){
+                if(rs.getString("login") == u.getLogin()){
                     int create = stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
                 }else
-                    System.err.println("Erreur HTTP 412");
+                    response.getOutputStream().print("Erreur HTTP 412");
             }
             return u;
         } catch(Exception e){
@@ -106,6 +102,7 @@ public class UserCRUD{
         System.err.println(e.getMessage());
         return null;
         } 
+    }
 
         @PutMapping("/{userId}")
         public User update(@PathVariable(value="userId") String id, @RequestBody User u, HttpServletResponse response){
@@ -113,16 +110,12 @@ public class UserCRUD{
                 Statement stmt = connection.createStatement();
                 ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
                 if(rs.next()){
-                    System.err.println("Erreur HTTP 403");
-                    
-                }else{
-                    User s = new User();
-                    s.login = rs.getString("login");
-                    s.age = rs.getInt("age");
-                    if(id == u.getLogin()){
-                        int create = stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
+                    if(rs.getString("login") == u.getLogin()){
+                        int create = stmt.executeUpdate("UPDATE chamis set age = "+ u.getAge() + "WHERE login = '" + u.login + "'"); 
                     }else
-                        System.err.println("Erreur HTTP 412");
+                    response.getOutputStream().print("Erreur HTTP 412");
+                }else{
+                    response.getOutputStream().print("Erreur HTTP 404");
                 }
                 return u;
             } catch(Exception e){
@@ -136,7 +129,4 @@ public class UserCRUD{
             return null;
             } 
     }
-
-
-    
  }
