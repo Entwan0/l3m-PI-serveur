@@ -39,6 +39,8 @@ public class DefiCRUD{
                 defi.dateDeCreation = rs.getDate("dateDeCreation");
                 defi.description = rs.getString("description");
                 defi.loginAuteur = rs.getString("login_fk");
+                defi.latitude = rs.getString("latitude");
+                defi.longitude = rs.getString("longitude");
                 L.add(defi);
             }
             return L;

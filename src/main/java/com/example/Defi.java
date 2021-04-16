@@ -7,6 +7,8 @@ public class Defi {
     public Date dateDeCreation;
     public String description;
     public String loginAuteur;
+    public String latitude;
+    public String longitude;
 
     public Defi(){
     }
@@ -25,5 +27,13 @@ public class Defi {
     }
     public String getLoginAuteur(){
         return loginAuteur;
+    }
+
+    public String getLatitude(){
+        return latitude;
+    }
+
+    public String getlongitude(){
+        return longitude;
     }
 }

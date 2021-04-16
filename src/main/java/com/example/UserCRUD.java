@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/api/users")
 public class UserCRUD{
-
     @Autowired
     private DataSource dataSource;
 
@@ -35,7 +34,8 @@ public class UserCRUD{
             while (rs.next()) {
                 User u = new User();
                 u.login = rs.getString("login");
-                u.age = rs.getInt("age");
+                u.nom = rs.getString("nom");
+                u.prenom = rs.getString("prenom");
                 L.add(u);
             }
             return L;
@@ -64,7 +64,8 @@ public class UserCRUD{
                 return null;
             }else{
                 u.login = rs.getString("login");
-                u.age = rs.getInt("age");
+                u.nom = rs.getString("nom");
+                u.prenom = rs.getString("prenom");
                 return u;
             }
         } catch(Exception e){
@@ -90,7 +91,7 @@ public class UserCRUD{
                 return null;
             } else {
                 if(id.equals(u.getLogin())) {
-                    stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getAge() +"')"); 
+                    stmt.executeUpdate("Insert into chamis values('"+ u.getLogin() +"','"+u.getNom() +"','"+ u.getPrenom() +"')"); 
                     return u;
                 } else {
                     response.setStatus(412);
@@ -117,7 +118,7 @@ public class UserCRUD{
                 ResultSet rs = stmt.executeQuery("SELECT * FROM chamis WHERE login='"+ id +"'");
                 if(rs.next()){
                     if(rs.getString("login").equals(u.getLogin())){
-                        stmt.executeUpdate("UPDATE chamis set age = "+ u.getAge() + "WHERE login = '" + u.login + "'"); 
+                        stmt.executeUpdate("UPDATE chamis set nom = '"+ u.getNom() + "', prenom = '" + u.getPrenom() + "' WHERE login = '" + u.login + "'"); 
                     }else{
                         response.setStatus(412);
                         response.getOutputStream().print("Erreur HTTP 412");
