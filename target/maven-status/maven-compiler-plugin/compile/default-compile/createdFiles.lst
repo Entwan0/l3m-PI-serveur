@@ -1,7 +1,9 @@
+com\example\Arret.class
 com\example\UserCRUD.class
 com\example\DbConnection.class
 com\example\Defi.class
 com\example\HttpTest.class
 com\example\User.class
+com\example\ArretCRUD.class
 com\example\DefiCRUD.class
 com\example\RestServer.class

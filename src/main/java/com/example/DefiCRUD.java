@@ -99,7 +99,8 @@ public class DefiCRUD{
                 return null;
             } else {
                 if(id.equals(u.getId())) {
-                    stmt.executeUpdate("Insert into defis values('"+ u.getId() +"','"+ u.getTitre() +"','"+ u.getDateDeCreation() + "','" + u.getDescription() + "','" + u.getLoginAuteur() + "')"); 
+                    System.out.println("Insert into defis values('"+ u.getId() +"','"+ u.getTitre() +"','"+ u.getDateDeCreation() + "','" + u.getDescription() + "','" + u.getLoginAuteur() + "','" + u.getLatitude() + "','" + u.getlongitude() + "')");
+                    stmt.executeUpdate("Insert into defis values('"+ u.getId() +"','"+ u.getTitre() +"','"+ u.getDateDeCreation() + "','" + u.getDescription() + "','" + u.getLoginAuteur() + "','" + u.getLatitude() + "','" + u.getlongitude() + "')"); 
                     return u;
                 } else {
                     response.setStatus(412);
@@ -126,7 +127,8 @@ public class DefiCRUD{
             ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
             if(rs.next()){
                 if(rs.getString("id").equals(u.getId())){
-                    stmt.executeUpdate("UPDATE defis set id ='"+ u.getId() +"',titre ='"+ u.getTitre() +"',datedecreation= '"+ u.getDateDeCreation()+"', description ='"+ u.getDescription()+"',login_fk ='"+ u.getLoginAuteur()+"' where id ='"+ u.getId() + "'"); 
+                    System.out.println("UPDATE defis set id = '"+ u.getId() +"', titre = '"+ u.getTitre() +"', datedecreation = '"+ u.getDateDeCreation() + "', description = '" + u.getDescription() + "', login_fk = '" + u.getLoginAuteur() + "',latitude = '" + u.getLatitude() + "', longitude = '" + u.getlongitude() + "' where id ='"+ u.getId() + "'");
+                    stmt.executeUpdate("UPDATE defis set id = '"+ u.getId() +"', titre = '"+ u.getTitre() +"', datedecreation = '"+ u.getDateDeCreation() + "', description = '" + u.getDescription() + "', login_fk = '" + u.getLoginAuteur() + "',latitude = '" + u.getLatitude() + "', longitude = '" + u.getlongitude() + "' where id ='"+ u.getId() + "'"); 
                 }else{
                     response.setStatus(412);
                     response.getOutputStream().print("Erreur HTTP 412");
