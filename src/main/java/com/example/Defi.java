@@ -7,33 +7,57 @@ public class Defi {
     public Date dateDeCreation;
     public String description;
     public String loginAuteur;
-    public String latitude;
     public String longitude;
+    public String latitude;
+    public String etape;
+    public String indice;
+    public String question;
+    public String reponse;
+
 
     public Defi(){
     }
 
     public String getId(){
-        return id;
+        return this.id;
     }
     public String getTitre(){
-        return titre;
+        return this.titre;
     }
     public Date getDateDeCreation(){
-        return dateDeCreation;
+        return this.dateDeCreation;
     }
     public String getDescription(){
-        return description;
+        return this.description;
     }
     public String getLoginAuteur(){
-        return loginAuteur;
+        return this.loginAuteur;
     }
 
     public String getLatitude(){
-        return latitude;
+        return this.latitude;
     }
 
     public String getlongitude(){
-        return longitude;
+        return this.longitude;
+    }
+
+
+    public String getEtape(){
+        return this.etape;
+    }
+
+
+    public String getIndice(){
+        return this.indice;
+    }
+
+
+    public String getQuestion(){
+        return this.question;
+    }
+
+    public String getReponse(){
+        return this.reponse;
     }
 }

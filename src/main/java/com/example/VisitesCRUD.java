@@ -19,33 +19,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
-@RequestMapping("api/defis")
-public class DefiCRUD{
+@RequestMapping("api/visites")
+public class VisitesCRUD{
 
     @Autowired
     private DataSource dataSource;
 
     @GetMapping("/")
-    public ArrayList<Defi> allDefis(HttpServletResponse response){
+    public ArrayList<Visites> allVisites(HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites");
             
-            ArrayList<Defi> L = new ArrayList<Defi>();
+            ArrayList<Visites> L = new ArrayList<Visites>();
             while (rs.next()) { 
-                Defi defi = new Defi(); 
-                defi.id = rs.getString("id");
-                defi.titre = rs.getString("titre");
-                defi.dateDeCreation = rs.getDate("dateDeCreation");
-                defi.description = rs.getString("description");
-                defi.loginAuteur = rs.getString("login_fk");
-                defi.latitude = rs.getString("latitude");
-                defi.longitude = rs.getString("longitude");
-                defi.etape = rs.getString("etape");
-                defi.indice = rs.getString("indice");
-                defi.question = rs.getString("question");
-                defi.reponse = rs.getString("reponse");
-                L.add(defi);
+                Visites visites = new Visites(); 
+                visites.idVisite = rs.getString("idvisite");
+                visites.idDefi = rs.getString("iddefi");
+                visites.nomVisiteur = rs.getString("nomvisiteur");
+                visites.dateVisite = rs.getDate("datevisite");
+                visites.mode = rs.getString("mode");
+                visites.score = rs.getString("score");
+                visites.temps = rs.getString("temps");
+                visites.status = rs.getString("status");
+                L.add(visites);
             }
             return L;
         }catch (Exception e){
@@ -60,30 +57,27 @@ public class DefiCRUD{
         }
     }
 
-    @GetMapping("/{defiID}")
-    public Defi read(@PathVariable(value="defiID") String id, HttpServletResponse response){
+    @GetMapping("/{visiteID}")
+    public Visites read(@PathVariable(value="visitesID") String id, HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE idvisite='"+ id +"'");
 
-            Defi defi = new Defi();
+            Visites visites = new Visites();
             if(!rs.next()){
                 response.setStatus(404);
                 response.getOutputStream().print("erreur 404");
                 return null;
             }else{
-                defi.id = rs.getString("id");
-                defi.titre = rs.getString("titre");
-                defi.dateDeCreation = rs.getDate("dateDeCreation");
-                defi.description = rs.getString("description");
-                defi.loginAuteur = rs.getString("login_fk");
-                defi.latitude = rs.getString("latitude");
-                defi.longitude = rs.getString("longitude");
-                defi.etape = rs.getString("etape");
-                defi.indice = rs.getString("indice");
-                defi.question = rs.getString("question");
-                defi.reponse = rs.getString("reponse");
-                return defi;
+                visites.idVisite = rs.getString("idvisite");
+                visites.idDefi = rs.getString("iddefi");
+                visites.nomVisiteur = rs.getString("nomvisiteur");
+                visites.dateVisite = rs.getDate("datevisite");
+                visites.mode = rs.getString("mode");
+                visites.score = rs.getString("score");
+                visites.temps = rs.getString("temps");
+                visites.status = rs.getString("status");
+                return visites;
             }
             
         } catch(Exception e){
@@ -98,18 +92,18 @@ public class DefiCRUD{
         }
     }
 
-    @PostMapping("/{defiID}")
-    public Defi create(@PathVariable(value="defiID") String id, @RequestBody Defi u, HttpServletResponse response){
+    @PostMapping("/{visitesID}")
+    public Visites create(@PathVariable(value="visitesID") String id, @RequestBody Visites u, HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id ='"+ id +"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE idvisite ='"+ id +"'");
             if (rs.next()) {
                 response.setStatus(403);
                 response.getOutputStream().print("Erreur HTTP 403");
                 return null;
             } else {
-                if(id.equals(u.getId())) {
-                    stmt.executeUpdate("Insert into defis values('"+ u.getId() +"','"+ u.getTitre() +"','"+ u.getDateDeCreation() + "','" + u.getDescription() + "','" + u.getLoginAuteur() + "','" + u.getLatitude() + "','" + u.getlongitude()+ "','" + u.getEtape()+ "','" + u.getIndice()+ "','" + u.getQuestion()+ "','" + u.getReponse() + "')"); 
+                if(id.equals(u.getIdVisite())) {
+                    stmt.executeUpdate("Insert into visites values('"+ u.getIdVisite() +"','"+ u.getIdDefis() +"','"+ u.getNomVisiteur() + "','" + u.getDateVisite() + "','" + u.getMode() + "','" + u.getScore() + "','" + u.getTemps()+ "','" + u.getStatus()+"'"); 
                     return u;
                 } else {
                     response.setStatus(412);
@@ -129,14 +123,14 @@ public class DefiCRUD{
         } 
     }
 
-    @PutMapping("/{defiID}")
-    public Defi update(@PathVariable(value="defiID") String id, @RequestBody Defi u, HttpServletResponse response){
+    @PutMapping("/{visitesID}")
+    public Visites update(@PathVariable(value="visitesID") String id, @RequestBody Visites u, HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE iddisite='"+ id +"'");
             if(rs.next()){
-                if(rs.getString("id").equals(u.getId())){
-                    stmt.executeUpdate("UPDATE defis set id = '"+ u.getId() +"', titre = '"+ u.getTitre() +"', datedecreation = '"+ u.getDateDeCreation() + "', description = '" + u.getDescription() + "', login_fk = '" + u.getLoginAuteur() + "',latitude = '" + u.getLatitude() + "', longitude = '" + u.getlongitude()  + "', etape = '" + u.getEtape() + "', indice = '" + u.getIndice() + "', question = '" + u.getQuestion()  + "', reponse = '" + u.getReponse() + "' where id ='"+ u.getId() + "'"); 
+                if(rs.getString("idVisite").equals(u.getIdVisite())){
+                    stmt.executeUpdate("UPDATE visites set idvisite = '"+ u.getIdVisite() +"', iddefi = '"+ u.getIdDefis() +"', nomvisiteur = '"+ u.getNomVisiteur() + "', datevisite = '" + u.getDateVisite() + "', mode = '" + u.getMode() + "', score = '" + u.getScore() + "', temps = '" + u.getTemps()+ "', status = '" + u.getStatus()+"'"); 
                 }else{
                     response.setStatus(412);
                     response.getOutputStream().print("Erreur HTTP 412");
@@ -158,13 +152,13 @@ public class DefiCRUD{
     return null;
     }
 
-    @DeleteMapping("/{userId}")
-    void delete(@PathVariable(value="userId") String id, HttpServletResponse response){
+    @DeleteMapping("/{visitesId}")
+    void delete(@PathVariable(value="visitesId") String id, HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM defis WHERE id='"+ id +"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE idvisite='"+ id +"'");
             if(rs.next()){
-                stmt.executeUpdate("DELETE FROM defis WHERE id = '" + id + "'"); 
+                stmt.executeUpdate("DELETE FROM visites WHERE idvisite = '" + id + "'"); 
             }else{
                 response.setStatus(404);
                 response.getOutputStream().print("Erreur HTTP 404");
