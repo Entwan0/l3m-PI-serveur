@@ -3,9 +3,10 @@ package com.example;
 public class Arret {
     public String nomArret;
     public String code;
-    public String streetMap;
-    public String googleMap;
+    public String latitude;
+    public String longitude;
     public String nomVille;
+    public String streetView;
     
     
     
@@ -21,14 +22,16 @@ public class Arret {
         return this.code;
     }
 
-    public String getStreetMap(){
-        return this.streetMap;
+    public String getLatitude(){
+        return this.latitude;
     }
-    public String getGoogleMap(){
-        return this.googleMap;
+    public String getLongitude(){
+        return this.longitude;
     }
     public String getNomVille(){
         return this.nomVille;
     }
-    
+    public String getStreetView(){
+        return this.streetView;
+    }
 }

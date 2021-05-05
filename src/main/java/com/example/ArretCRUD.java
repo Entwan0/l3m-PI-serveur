@@ -34,9 +34,10 @@ public class ArretCRUD{
                 Arret u = new Arret();
                 u.nomArret = rs.getString("nomArret");
                 u.code = rs.getString("code");
-                u.streetMap = rs.getString("streetMap");
-                u.googleMap = rs.getString("googleMap");
+                u.latitude = rs.getString("latitude");
+                u.longitude = rs.getString("longitude");
                 u.nomVille = rs.getString("nomVille");
+                u.streetView= rs.getString("streetView");
                 L.add(u);
             }
             return L;
@@ -66,9 +67,10 @@ public class ArretCRUD{
             }else{
                 u.nomArret = rs.getString("nomArret");
                 u.code = rs.getString("code");
-                u.streetMap = rs.getString("streetMap");
-                u.googleMap = rs.getString("googleMap");
+                u.latitude = rs.getString("latitude");
+                u.longitude= rs.getString("longitude");
                 u.nomVille = rs.getString("nomVille");
+                u.streetView= rs.getString("streetView");
                 return u;
             }
         } catch(Exception e){
@@ -94,7 +96,7 @@ public class ArretCRUD{
                 return null;
             } else {
                 if(id.equals(u.getNomArret())) {
-                    stmt.executeUpdate("Insert into arret values('"+ u.getNomArret() +"','"+u.getCod() +"','"+ u.getStreetMap() +"','"+ u.getGoogleMap() +"','"+ u.getNomVille() +"')"); 
+                    stmt.executeUpdate("Insert into arret values('"+ u.getNomArret() +"','"+u.getCod() +"','"+ u.getLatitude() +"','"+ u.getLongitude() +"','"+ u.getNomVille() + "','"+ u.getStreetView() +"')"); 
                     return u;
                 } else {
                     response.setStatus(412);
@@ -121,7 +123,8 @@ public class ArretCRUD{
                 ResultSet rs = stmt.executeQuery("SELECT * FROM arret WHERE nomArret='"+ id +"'");
                 if(rs.next()){
                     if(rs.getString("nomArret").equals(u.getNomArret())){
-                        stmt.executeUpdate("UPDATE Arret set nomArret = '"+ u.getNomArret() + "', code = '" + u.getCod() + "', steetMap = '" + u.getStreetMap() + "', googleMap = '" + u.getGoogleMap() + "', nomVille = '" + u.getNomVille() + "' WHERE nomArret = '" + u.nomArret + "'"); 
+                        System.out.println("UPDATE arret set nomArret = '"+ u.getNomArret() + "', code = '" + u.getCod() + "', latitude = '" + u.getLatitude() + "',longitude = '" + u.getLongitude() + "',nomVille = '" + u.getNomVille() + "',streetView = '" + u.getStreetView() + "' WHERE nomArret = '" + u.getNomArret()+ "'");
+                        stmt.executeUpdate("UPDATE arret set nomArret = '"+ u.getNomArret() + "', code = '" + u.getCod() + "', latitude = '" + u.getLatitude() + "',longitude = '" + u.getLongitude() + "',nomVille = '" + u.getNomVille() + "',streetView = '" + u.getStreetView() + "' WHERE nomArret = '" + u.getNomArret()+ "'"); 
                     }else{
                         response.setStatus(412);
                         response.getOutputStream().print("Erreur HTTP 412");
