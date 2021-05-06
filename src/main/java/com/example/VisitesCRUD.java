@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("api/visites")
 public class VisitesCRUD{
-
     @Autowired
     private DataSource dataSource;
 
@@ -35,7 +34,7 @@ public class VisitesCRUD{
             while (rs.next()) { 
                 Visites visites = new Visites(); 
                 visites.idVisite = rs.getString("idvisite");
-                visites.idDefi = rs.getString("iddefi");
+                visites.idDefis = rs.getString("iddefi");
                 visites.nomVisiteur = rs.getString("nomvisiteur");
                 visites.dateVisite = rs.getDate("datevisite");
                 visites.mode = rs.getString("mode");
@@ -70,7 +69,7 @@ public class VisitesCRUD{
                 return null;
             }else{
                 visites.idVisite = rs.getString("idvisite");
-                visites.idDefi = rs.getString("iddefi");
+                visites.idDefis = rs.getString("iddefi");
                 visites.nomVisiteur = rs.getString("nomvisiteur");
                 visites.dateVisite = rs.getDate("datevisite");
                 visites.mode = rs.getString("mode");
@@ -103,7 +102,7 @@ public class VisitesCRUD{
                 return null;
             } else {
                 if(id.equals(u.getIdVisite())) {
-                    stmt.executeUpdate("Insert into visites values('"+ u.getIdVisite() +"','"+ u.getIdDefis() +"','"+ u.getNomVisiteur() + "','" + u.getDateVisite() + "','" + u.getMode() + "','" + u.getScore() + "','" + u.getTemps()+ "','" + u.getStatus()+"'"); 
+                    stmt.executeUpdate("Insert into visites values('"+ u.getIdVisite() +"','"+ u.getIdDefis() +"','"+ u.getNomVisiteur() + "','" + u.getDateVisite() + "','" + u.getMode() + "','" + u.getScore() + "','" + u.getTemps()+ "','" + u.getStatus()+"')"); 
                     return u;
                 } else {
                     response.setStatus(412);
@@ -127,10 +126,10 @@ public class VisitesCRUD{
     public Visites update(@PathVariable(value="visitesID") String id, @RequestBody Visites u, HttpServletResponse response){
         try (Connection connection = dataSource.getConnection()){
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE iddisite='"+ id +"'");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM visites WHERE idvisite='"+ id +"'");
             if(rs.next()){
                 if(rs.getString("idVisite").equals(u.getIdVisite())){
-                    stmt.executeUpdate("UPDATE visites set idvisite = '"+ u.getIdVisite() +"', iddefi = '"+ u.getIdDefis() +"', nomvisiteur = '"+ u.getNomVisiteur() + "', datevisite = '" + u.getDateVisite() + "', mode = '" + u.getMode() + "', score = '" + u.getScore() + "', temps = '" + u.getTemps()+ "', status = '" + u.getStatus()+"'"); 
+                    stmt.executeUpdate("UPDATE visites set idvisite = '"+ u.getIdVisite() +"', iddefi = '"+ u.getIdDefis() +"', nomvisiteur = '"+ u.getNomVisiteur() + "', datevisite = '" + u.getDateVisite() + "', mode = '" + u.getMode() + "', score = '" + u.getScore() + "', temps = '" + u.getTemps()+ "', status = '" + u.getStatus()+"' WHERE idvisite = '" + u.getIdVisite() + "'"); 
                 }else{
                     response.setStatus(412);
                     response.getOutputStream().print("Erreur HTTP 412");
